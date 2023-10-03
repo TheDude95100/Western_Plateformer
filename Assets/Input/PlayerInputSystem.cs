@@ -6,9 +6,12 @@ using UnityEngine.InputSystem;
 public class PlayerInputSystem : MonoBehaviour
 {
     [SerializeField] PlayerController playerController;
-    public void Jump()
+    public void Jump(InputAction.CallbackContext context)
     {
-        playerController.Jump();
+        if (context.started)
+        {
+            playerController.Jump();
+        }
     }
     
     public void WalkRight(InputAction.CallbackContext context)
@@ -39,7 +42,7 @@ public class PlayerInputSystem : MonoBehaviour
     {
         if (context.started)
         {
-            playerController.TakeDamage();
+            //playerController.TakeDamage();
         }
     }
 
@@ -51,6 +54,11 @@ public class PlayerInputSystem : MonoBehaviour
         }
     }
 
-    
-
+    public void Dash(InputAction.CallbackContext context)
+    {
+        if(context.started)
+        {
+            StartCoroutine(playerController.Dash());
+        }
+    }
 }

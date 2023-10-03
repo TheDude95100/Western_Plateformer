@@ -35,6 +35,7 @@ public class PlayerAnimation : MonoBehaviour
         if (!_playerController.Dead)
         {
 
+
             if (!_playerController.isWalking)
             {
                 _currentState = PlayerAnimState.PLAYER_IDLE;
@@ -59,6 +60,10 @@ public class PlayerAnimation : MonoBehaviour
             {
                 _currentState = PlayerAnimState.PLAYER_ATTACK;
             }
+            if (_playerController.Dashing)
+            {
+                _currentState = PlayerAnimState.PLAYER_DASH;
+            }
         }
         else
         {
@@ -76,5 +81,6 @@ public class PlayerAnimation : MonoBehaviour
         public const string PLAYER_JUMPATTACK = "jump attack";
         public const string PLAYER_WALLSLIDE = "wallslide";
         public const string PLAYER_DIE = "die";
+        public const string PLAYER_DASH = "dash";
     }
 }

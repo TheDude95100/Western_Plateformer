@@ -18,4 +18,8 @@ MonoBehaviour:
   VelPower: 1.2
   Friction: 0.7
   JumpForce: 10
+  DoubleJumpForce: 8
   FallGravityForce: 5
+  DashForce: 24
+  DashingTime: 0.5
+  DashingCooldown: 1
