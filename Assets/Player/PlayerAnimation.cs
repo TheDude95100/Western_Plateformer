@@ -28,7 +28,7 @@ public class PlayerAnimation : MonoBehaviour
         GetCurrentState();
         if(_currentState == _lastState) { return; }
         _animator.Play(_currentState);
-        _lastState= _currentState;
+        _lastState = _currentState;
     }
     private void GetCurrentState()
     {

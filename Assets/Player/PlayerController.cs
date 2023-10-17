@@ -22,14 +22,13 @@ public class PlayerController : MonoBehaviour, IPlayerController
     internal int Ammo { get; private set; }
 
     internal int JumpAvailable { get; private set; }
-
-
-
     internal int Walking { get; private set; }
 
     bool _grounded, _jumpUsable, _isTouchingAWall, _isJumping, _dead, _canDash, _isWallSliding;
 
     bool walkingRight, walkingLeft;
+
+    #region Interface values
     public bool Falling => m_Rigidbody.velocity.y < 0;
     public bool Jumping => m_Rigidbody.velocity.y > 0;
 
@@ -42,17 +41,18 @@ public class PlayerController : MonoBehaviour, IPlayerController
 
     public bool IsJumping => _isJumping;
     public bool Dead => _dead;
+    #endregion
 
-    internal int LastDirectionFaced { get; set; }
 
-    internal bool m_FacingRight = true;
+    internal bool m_FacingRight;
+
     private void Start()
     {
         bc = GetComponent<BoxCollider2D>();
-        LastDirectionFaced = 1;
+        m_FacingRight = true;
         Health = 4;
         Ammo = 6;
-        JumpAvailable = 2;
+        JumpAvailable = 0;
         playerInput = GetComponent<PlayerInput>();
     }
     // Update is called once per frame
@@ -63,10 +63,6 @@ public class PlayerController : MonoBehaviour, IPlayerController
         if (Walking != 0)
         {
             Walk();
-            if (Walking != LastDirectionFaced)
-            {
-                Flip();
-            }
         }
 
     }
@@ -74,11 +70,13 @@ public class PlayerController : MonoBehaviour, IPlayerController
     void FixedUpdate()
     {
         if (Dashing) { return; }
+        DoINeedToFlip();
         IsGrounded();
         IsTouchingAWall();
         ResetGravity();
         WallSlide();
     }
+
     private void Walk()
     {
 
@@ -96,12 +94,24 @@ public class PlayerController : MonoBehaviour, IPlayerController
     private void Flip()
     {
         m_FacingRight = !m_FacingRight;
-
         Vector3 theScale = transform.localScale;
         theScale.x *= -1;
         transform.localScale = theScale;
     }
+    #region Jump
 
+    public void Jump()
+    {
+        _jumpUsable = (JumpAvailable > 0) ? true : false;
+        if (_jumpUsable)
+        {
+            if (_grounded) { NormalJump(); }
+            else if ((Falling || Jumping) && !TouchingWall) { DoubleJump(); }
+            else if (_isWallSliding) { WallJump(); }
+
+        }
+        JumpAvailable--;
+    }
     private void NormalJump()
     {
         Debug.Log("Jump");
@@ -118,27 +128,16 @@ public class PlayerController : MonoBehaviour, IPlayerController
 
     private void WallJump()
     {
-        Debug.Log("Walljump");
-        float wallJumpingDirection = LastDirectionFaced;
+        float wallJumpingDirection = m_FacingRight? 1 : -1;
         m_Rigidbody.velocity = new Vector2(wallJumpingDirection * _stats.WallJumpForce.x, _stats.WallJumpForce.y);
-    }
-    private void GravityModifier()
-    {
-        if (!Falling) return;
-        m_Rigidbody.AddForce(Vector2.down * _stats.FallGravityForce, ForceMode2D.Force);
+
     }
 
-    private void LateUpdate()
-    {
-        if (Walking != 0)
-        {
-            LastDirectionFaced = Walking;
-        }
-    }
+    #endregion
 
     private void ResetVelocity()
     {
-        m_Rigidbody.velocity = new Vector2(0, m_Rigidbody.velocity.y);
+        m_Rigidbody.velocity *= 0;
     }
     public void SetWalkingRight(bool isWalkingRight)
     {
@@ -149,58 +148,72 @@ public class PlayerController : MonoBehaviour, IPlayerController
         walkingLeft = isWalkingLeft;
     }
 
+    #region Physics Checks
     private void IsGrounded()
     {
         bool groundedLive = Physics2D.OverlapCircle(feetPos.position, checkRadius, _groundLayerMask);
         if (groundedLive && _grounded)
         {
-            JumpAvailable = 2;
+            JumpAvailable = 1;
         }
         _grounded = groundedLive;
+    }
+
+    private void DoINeedToFlip()
+    {
+        if(Mathf.Abs(m_Rigidbody.velocity.x) > 0.1)
+        {
+            if (m_Rigidbody.velocity.x > 0 && !m_FacingRight)
+            {
+                Flip();
+            }
+            if (m_Rigidbody.velocity.x < 0 && m_FacingRight)
+            {
+                Flip();
+            }
+        }
+
+
+    }
+
+    public void JumpRelease()
+    {
+        if(Jumping)
+        {
+            m_Rigidbody.gravityScale *= 3;
+        }
     }
 
     private void IsTouchingAWall()
     {
         float extraWidth = 0.1f;
-        bool touchingWallLive = Physics2D.Raycast(bc.bounds.center, Vector2.right * LastDirectionFaced, bc.bounds.extents.x + extraWidth, _groundLayerMask);
+        bool touchingWallLive = false;
+        if (m_FacingRight)
+        {
+            touchingWallLive = Physics2D.Raycast(bc.bounds.center, Vector2.right, bc.bounds.extents.x + extraWidth, _groundLayerMask);
+        }
+        else
+        {
+            touchingWallLive = Physics2D.Raycast(bc.bounds.center, -Vector2.right, bc.bounds.extents.x + extraWidth, _groundLayerMask);
+        }
         _isTouchingAWall = touchingWallLive;
 
-    }
-    public void Jump()
-    {
-        _jumpUsable = (JumpAvailable > 0) ? true : false;
-        if (_jumpUsable)
-        {
-            if (_grounded) { NormalJump(); }
-            else if ((Falling || Jumping) && !TouchingWall) { DoubleJump(); }
-            else if(_isWallSliding) { WallJump(); }
-
-        }
-        JumpAvailable--;
     }
 
     private void WallSlide()
     {
-        if (!_grounded && _isTouchingAWall && m_Rigidbody.velocity.y !=0)
+        if (!_grounded && _isTouchingAWall && m_Rigidbody.velocity.y != 0)
         {
-            _isWallSliding= true;
+            _isWallSliding = true;
             m_Rigidbody.velocity = new Vector2(m_Rigidbody.velocity.x, Mathf.Clamp(m_Rigidbody.velocity.y, -_stats.WallSlidingSpeed, float.MaxValue));
+            JumpAvailable++;
         }
         else
         {
             _isWallSliding = false;
         }
     }
-    public void TakeDamage()
-    {
-        if (Health == 0) { return; }
-        Health -= 1;
-        MenuManager.Instance.HUD.UpdateHealthBar();
-        if (Health <= 0)
-        {
-            Die();
-        }
-    }
+    #endregion
 
     public void Heal(int healing)
     {
@@ -214,6 +227,8 @@ public class PlayerController : MonoBehaviour, IPlayerController
         }
         MenuManager.Instance.HUD.UpdateHealthBar();
     }
+
+    #region Fighting Stuff
     public void Shoot()
     {
         if (TouchingWall) { return; }
@@ -226,13 +241,6 @@ public class PlayerController : MonoBehaviour, IPlayerController
         Ammo--;
         MenuManager.Instance.HUD.UpdateBullets();
     }
-
-    private void Die()
-    {
-        _dead = true;
-        this.enabled = false;
-        //SceneManager.LoadScene("Assets/Scenes/SampleScene.unity", LoadSceneMode.Single);
-    }
     private void Reload()
     {
         Ammo = 6;
@@ -243,15 +251,37 @@ public class PlayerController : MonoBehaviour, IPlayerController
     {
         Shooting = false;
     }
+    public void TakeDamage()
+    {
+        if (Health == 0) { return; }
+        Health -= 1;
+        MenuManager.Instance.HUD.UpdateHealthBar();
+        if (Health <= 0)
+        {
+            Die();
+        }
+    }
 
+    private void Die()
+    {
+        _dead = true;
+        this.enabled = false;
+        //SceneManager.LoadScene("Assets/Scenes/SampleScene.unity", LoadSceneMode.Single);
+    }
+
+    #endregion
     private void ResetGravity()
     {
-        m_Rigidbody.gravityScale = m_Rigidbody.gravityScale != 1 ? 1 : m_Rigidbody.gravityScale;
+        if (!Jumping)
+        {
+            m_Rigidbody.gravityScale = m_Rigidbody.gravityScale != 1 ? 1 : m_Rigidbody.gravityScale;
+
+        }
     }
 
     private void ResetYSpeed()
     {
-        m_Rigidbody.velocity = Vector2.up * 0;
+        m_Rigidbody.velocity *= Vector2.up * 0;
     }
 
     public IEnumerator Dash()
@@ -268,8 +298,6 @@ public class PlayerController : MonoBehaviour, IPlayerController
         Dashing = false;
         yield return new WaitForSeconds(_stats.DashingCooldown);
         _canDash = true;
-
-
     }
 
 }

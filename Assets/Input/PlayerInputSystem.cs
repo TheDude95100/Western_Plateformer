@@ -12,6 +12,10 @@ public class PlayerInputSystem : MonoBehaviour
         {
             playerController.Jump();
         }
+        if(context.canceled)
+        {
+            playerController.JumpRelease();
+        }
     }
     
     public void WalkRight(InputAction.CallbackContext context)
