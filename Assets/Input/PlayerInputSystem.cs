@@ -65,4 +65,20 @@ public class PlayerInputSystem : MonoBehaviour
             StartCoroutine(playerController.Dash());
         }
     }
+
+    public void Swing()
+    {
+        if (playerController.Swinging)
+        {
+            PlayerManager.instance.getHookPoint().CreateJoint();
+        }
+    }
+
+    public void BreakSwing()
+    {
+        if (playerController.Swinging)
+        {
+            PlayerManager.instance.getHookPoint().BreakJoint();
+        }
+    }
 }

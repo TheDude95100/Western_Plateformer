@@ -18,9 +18,9 @@ MonoBehaviour:
   VelPower: 1.2
   Friction: 0.7
   WallSlidingSpeed: 1
-  JumpForce: 10
-  DoubleJumpForce: 8
-  FallGravityForce: 5
+  JumpForce: 7.5
+  DoubleJumpForce: 17.5
+  FallGravityForce: 10
   DashForce: 24
   DashingTime: 0.5
   DashingCooldown: 1

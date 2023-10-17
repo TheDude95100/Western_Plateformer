@@ -1,10 +1,11 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-
+using UnityEngine.UIElements;
 
 public class PlayerController : MonoBehaviour, IPlayerController
 {
@@ -29,8 +30,8 @@ public class PlayerController : MonoBehaviour, IPlayerController
     bool walkingRight, walkingLeft;
 
     #region Interface values
-    public bool Falling => m_Rigidbody.velocity.y < 0;
-    public bool Jumping => m_Rigidbody.velocity.y > 0;
+    public bool Falling => m_Rigidbody.velocity.y < -0.05;
+    public bool Jumping => m_Rigidbody.velocity.y > 0.05;
 
     public PlayerInput playerInput { get; private set; }
     public bool isWalking => Walking != 0;
@@ -41,6 +42,9 @@ public class PlayerController : MonoBehaviour, IPlayerController
 
     public bool IsJumping => _isJumping;
     public bool Dead => _dead;
+
+    public bool Swinging { get; set; }
+    public bool isSwinging { get; set; }
     #endregion
 
 
@@ -64,6 +68,7 @@ public class PlayerController : MonoBehaviour, IPlayerController
         {
             Walk();
         }
+        
 
     }
 
@@ -75,6 +80,8 @@ public class PlayerController : MonoBehaviour, IPlayerController
         IsTouchingAWall();
         ResetGravity();
         WallSlide();
+        GravityModifier();
+
     }
 
     private void Walk()
@@ -103,6 +110,7 @@ public class PlayerController : MonoBehaviour, IPlayerController
     public void Jump()
     {
         _jumpUsable = (JumpAvailable > 0) ? true : false;
+        if(isSwinging) { isSwinging= false; }
         if (_jumpUsable)
         {
             if (_grounded) { NormalJump(); }
@@ -111,10 +119,10 @@ public class PlayerController : MonoBehaviour, IPlayerController
 
         }
         JumpAvailable--;
+
     }
     private void NormalJump()
     {
-        Debug.Log("Jump");
         m_Rigidbody.velocity = new Vector2(m_Rigidbody.velocity.x, 0);
         m_Rigidbody.AddForce(Vector2.up * _stats.JumpForce, ForceMode2D.Impulse);
 
@@ -122,7 +130,6 @@ public class PlayerController : MonoBehaviour, IPlayerController
 
     private void DoubleJump()
     {
-        Debug.Log("Double Jump");
         m_Rigidbody.AddForce(Vector2.up * _stats.JumpForce, ForceMode2D.Impulse);
     }
 
@@ -134,7 +141,10 @@ public class PlayerController : MonoBehaviour, IPlayerController
     }
 
     #endregion
-
+    private void ResetYSpeed()
+    {
+        m_Rigidbody.velocity *= Vector2.up;
+    }
     private void ResetVelocity()
     {
         m_Rigidbody.velocity *= 0;
@@ -158,6 +168,12 @@ public class PlayerController : MonoBehaviour, IPlayerController
         }
         _grounded = groundedLive;
     }
+    private void GravityModifier()
+    {
+        if (!Falling) { return; }
+            m_Rigidbody.AddForce(Vector3.down * _stats.FallGravityForce, ForceMode2D.Force);
+
+    }
 
     private void DoINeedToFlip()
     {
@@ -178,10 +194,7 @@ public class PlayerController : MonoBehaviour, IPlayerController
 
     public void JumpRelease()
     {
-        if(Jumping)
-        {
-            m_Rigidbody.gravityScale *= 3;
-        }
+        m_Rigidbody.gravityScale = 3;     
     }
 
     private void IsTouchingAWall()
@@ -202,6 +215,7 @@ public class PlayerController : MonoBehaviour, IPlayerController
 
     private void WallSlide()
     {
+        
         if (!_grounded && _isTouchingAWall && m_Rigidbody.velocity.y != 0)
         {
             _isWallSliding = true;
@@ -275,15 +289,8 @@ public class PlayerController : MonoBehaviour, IPlayerController
         if (!Jumping)
         {
             m_Rigidbody.gravityScale = m_Rigidbody.gravityScale != 1 ? 1 : m_Rigidbody.gravityScale;
-
         }
     }
-
-    private void ResetYSpeed()
-    {
-        m_Rigidbody.velocity *= Vector2.up * 0;
-    }
-
     public IEnumerator Dash()
     {
         _canDash = false;
