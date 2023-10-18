@@ -46,7 +46,7 @@ public class PlayerInputSystem : MonoBehaviour
     {
         if (context.started)
         {
-            //playerController.TakeDamage();
+            playerController.Shoot();
         }
     }
 

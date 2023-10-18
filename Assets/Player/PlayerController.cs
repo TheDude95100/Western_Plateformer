@@ -13,6 +13,7 @@ public class PlayerController : MonoBehaviour, IPlayerController
     [SerializeField] Rigidbody2D m_Rigidbody;
     [SerializeField] MovementsStats _stats;
     [SerializeField] LayerMask _groundLayerMask;
+    [SerializeField] LayerMask _iceLayerMask;
     [SerializeField] float distanceAvecLeSol;
     [SerializeField] Transform feetPos;
     [SerializeField] float checkRadius;
@@ -147,6 +148,7 @@ public class PlayerController : MonoBehaviour, IPlayerController
     }
     private void ResetVelocity()
     {
+        if (Physics2D.OverlapCircle(feetPos.position, checkRadius, _iceLayerMask)) return;
         m_Rigidbody.velocity *= 0;
     }
     public void SetWalkingRight(bool isWalkingRight)
