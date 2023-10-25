@@ -19,9 +19,6 @@ public class HUD : MonoBehaviour
     [Header("Score")]
     [SerializeField] TextMeshProUGUI Score;
 
-    string bullet = "Assets/Import/Western_HUD/Bullet_";
-    string health = "Western_HUD/Health_";
-
     private void Start()
     {
         playerManager = PlayerManager.instance;
