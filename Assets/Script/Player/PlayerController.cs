@@ -28,6 +28,8 @@ public class PlayerController : MonoBehaviour, IPlayerController
     internal int JumpAvailable { get; private set; }
     internal int Walking { get; private set; }
 
+    public bool Hurting { get; set; }
+
     bool _grounded, _jumpUsable, _isTouchingAWall, _isJumping, _dead, _canDash, _isWallSliding;
 
     bool walkingRight, walkingLeft;
@@ -77,6 +79,7 @@ public class PlayerController : MonoBehaviour, IPlayerController
 
     void FixedUpdate()
     {
+        Debug.Log(Hurting);
         if (Dashing) { return; }
         DoINeedToFlip();
         IsGrounded();
@@ -295,9 +298,22 @@ public class PlayerController : MonoBehaviour, IPlayerController
         }
     }
 
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("Enemy"))
+        {
+            TakeDamage(1);
+            Hurting = true;
+        }
+    }
     public void ShootBullet()
     {
         _gunControler.ShootBullet();
+    }
+
+    public void SetHurtingToFalse()
+    {
+        Hurting = false;
     }
     public IEnumerator Dash()
     {

@@ -99,7 +99,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7527bb44feb8b5d43b7a61007b89f544, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerManager: {fileID: 6710669965591574134, guid: 59a097a93d3e3b64d8c023446ce652f6, type: 3}
 --- !u!61 &1106264007698996063
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -171,4 +170,4 @@ Rigidbody2D:
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
-  m_Constraints: 0
+  m_Constraints: 4

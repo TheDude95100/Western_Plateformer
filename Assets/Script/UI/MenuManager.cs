@@ -9,6 +9,7 @@ public class MenuManager : MonoBehaviour
     public HUD HUD;
     public MenuPause MenuPause;
     public MenuMort MenuMort;
+    public MenuWin MenuWin;
 
     [SerializeField] PlayerManager playerManager;
     private void Awake()

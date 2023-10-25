@@ -8,4 +8,6 @@
     bool Jumping { get; }
     bool Shooting { get; }
     bool TouchingWall { get; }
+
+    bool Hurting { get; }
 }

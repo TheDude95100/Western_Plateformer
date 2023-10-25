@@ -10,7 +10,7 @@ public class DeathWall : MonoBehaviour
 
         if (collision.gameObject.CompareTag("Player"))
         {
-            playerController.TakeDamage(4);
+            playerController.TakeDamage(playerController.Health);
         }
     }
 }

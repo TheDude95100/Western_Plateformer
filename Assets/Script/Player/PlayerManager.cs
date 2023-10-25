@@ -8,7 +8,6 @@ public class PlayerManager : MonoBehaviour
     PlayerController _playerController;
     HookPoint lastHookPoint;
     public int Score;
-    internal bool Dead { get; private set; }
 
     public static PlayerManager instance;
 
@@ -24,6 +23,7 @@ public class PlayerManager : MonoBehaviour
     }
     public void ChangePlayerEnabledStatus()
     {
+        if (_playerController.playerInput == null) return;
         _playerController.playerInput.enabled = !_playerController.playerInput.enabled;
         _playerController.enabled = !_playerController.enabled;
     }

@@ -34,35 +34,41 @@ public class PlayerAnimation : MonoBehaviour
     {
         if (!_playerController.Dead)
         {
+            if (!_playerController.Hurting) 
+            { 
 
-
-            if (!_playerController.isWalking)
-            {
-                _currentState = PlayerAnimState.PLAYER_IDLE;
-            }
-            if (_playerController.isWalking)
-            {
-                _currentState = PlayerAnimState.PLAYER_RUN;
-            }
-            if (_playerController.Falling || _playerController.Jumping)
-            {
-                _currentState = PlayerAnimState.PLAYER_FALL;
-                if (_playerController.Shooting)
+                if (!_playerController.isWalking)
                 {
-                    _currentState = PlayerAnimState.PLAYER_JUMPATTACK;
+                    _currentState = PlayerAnimState.PLAYER_IDLE;
                 }
-                if (_playerController.TouchingWall)
+                if (_playerController.isWalking)
                 {
-                    _currentState = PlayerAnimState.PLAYER_WALLSLIDE;
+                    _currentState = PlayerAnimState.PLAYER_RUN;
+                }
+                if (_playerController.Falling || _playerController.Jumping)
+                {
+                    _currentState = PlayerAnimState.PLAYER_FALL;
+                    if (_playerController.Shooting)
+                    {
+                        _currentState = PlayerAnimState.PLAYER_JUMPATTACK;
+                    }
+                    if (_playerController.TouchingWall)
+                    {
+                        _currentState = PlayerAnimState.PLAYER_WALLSLIDE;
+                    }
+                }
+                if (_playerController.Shooting && !(_playerController.Falling || _playerController.Jumping))
+                {
+                    _currentState = PlayerAnimState.PLAYER_ATTACK;
+                }
+                if (_playerController.Dashing)
+                {
+                    _currentState = PlayerAnimState.PLAYER_DASH;
                 }
             }
-            if (_playerController.Shooting && !(_playerController.Falling || _playerController.Jumping))
+            else
             {
-                _currentState = PlayerAnimState.PLAYER_ATTACK;
-            }
-            if (_playerController.Dashing)
-            {
-                _currentState = PlayerAnimState.PLAYER_DASH;
+                _currentState = PlayerAnimState.PLAYER_HURT;
             }
         }
         else
@@ -82,5 +88,6 @@ public class PlayerAnimation : MonoBehaviour
         public const string PLAYER_WALLSLIDE = "wallslide";
         public const string PLAYER_DIE = "die";
         public const string PLAYER_DASH = "dash";
+        public const string PLAYER_HURT = "hurt";
     }
 }

@@ -6,6 +6,8 @@ public class MovingPlateform : MonoBehaviour
 {
     float initialHeight;
 
+    public float elevationValue;
+
     bool goingUp;
     bool goingDown;
     // Start is called before the first frame update
@@ -21,7 +23,7 @@ public class MovingPlateform : MonoBehaviour
         if (goingUp)
         {
             transform.position = new Vector3(transform.position.x, transform.position.y + 1 * Time.deltaTime, 0);
-            if (transform.position.y > initialHeight + 2.5)
+            if (transform.position.y > initialHeight + elevationValue)
             {
                 goingUp = false;
                 goingDown = true;
@@ -30,7 +32,7 @@ public class MovingPlateform : MonoBehaviour
         else
         {
             transform.position = new Vector3(transform.position.x, transform.position.y - 1 * Time.deltaTime, 0);
-            if (transform.position.y < initialHeight - 2.5)
+            if (transform.position.y < initialHeight - elevationValue)
             {
                 goingDown = false;
                 goingUp = true;
