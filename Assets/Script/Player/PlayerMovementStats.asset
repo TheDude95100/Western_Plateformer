@@ -19,7 +19,7 @@ MonoBehaviour:
   Friction: 0.7
   WallSlidingSpeed: 1
   JumpForce: 7.5
-  DoubleJumpForce: 17.5
+  DoubleJumpForce: 30
   FallGravityForce: 10
   DashForce: 24
   DashingTime: 0.5

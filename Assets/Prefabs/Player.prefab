@@ -137,6 +137,51 @@ MonoBehaviour:
     mipBias: 0
     varianceClampScale: 0.9
     contrastAdaptiveSharpening: 0
+--- !u!1 &4993407498032233314
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2094880738535599199}
+  - component: {fileID: 2305271246134869962}
+  m_Layer: 0
+  m_Name: BulletSpawner
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2094880738535599199
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4993407498032233314}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.6, y: -0.008, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5887058979305821500}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2305271246134869962
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4993407498032233314}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac629b6026845fe4ea2e489c755f54c3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  bullet: {fileID: 4147827673273805915, guid: 0f40d0b76a347c34c866c99a6dfe52d7, type: 3}
 --- !u!1 &5507231964859254759
 GameObject:
   m_ObjectHideFlags: 0
@@ -178,6 +223,7 @@ Transform:
   m_Children:
   - {fileID: 5671375800862039512}
   - {fileID: 7577309192461933680}
+  - {fileID: 2094880738535599199}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!50 &4716184256476841134
@@ -283,10 +329,15 @@ MonoBehaviour:
   _groundLayerMask:
     serializedVersion: 2
     m_Bits: 64
+  _iceLayerMask:
+    serializedVersion: 2
+    m_Bits: 128
   distanceAvecLeSol: 1
   feetPos: {fileID: 5671375800862039512}
-  checkRadius: 0.3
+  checkRadius: 0.1
   tr: {fileID: 8086625644283043709}
+  _bulletController: {fileID: 1163241871901506676, guid: 0f40d0b76a347c34c866c99a6dfe52d7, type: 3}
+  _gunControler: {fileID: 2305271246134869962}
 --- !u!114 &810313058465439614
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -408,6 +459,26 @@ MonoBehaviour:
         m_CallState: 2
     m_ActionId: e84c6c1c-7c4a-4fdc-b606-d4fd84743d97
     m_ActionName: PlayerActionMap/Dash[/Keyboard/leftShift]
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1540802759273108228}
+        m_TargetAssemblyTypeName: PlayerInputSystem, Assembly-CSharp
+        m_MethodName: Swing
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: 06e30a11-7a34-41cf-b270-0690c5bec11f
+    m_ActionName: PlayerActionMap/Interact[/Keyboard/e]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 6be80a73-0b73-4094-99b6-a3e32f36014f
+    m_ActionName: PlayerActionMap/BreakSwing[/Keyboard/space]
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: PlayerActionMap
@@ -614,6 +685,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3da813b9d3f95d04c8752becd98bff7a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Score: 0
 --- !u!1 &6110369544930753705
 GameObject:
   m_ObjectHideFlags: 0

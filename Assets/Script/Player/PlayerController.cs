@@ -18,6 +18,8 @@ public class PlayerController : MonoBehaviour, IPlayerController
     [SerializeField] Transform feetPos;
     [SerializeField] float checkRadius;
     [SerializeField] TrailRenderer tr;
+    [SerializeField] BulletControler _bulletController;
+    [SerializeField] GunControler _gunControler;
     BoxCollider2D bc;
 
     internal int Health { get; private set; }
@@ -267,10 +269,10 @@ public class PlayerController : MonoBehaviour, IPlayerController
     {
         Shooting = false;
     }
-    public void TakeDamage()
+    public void TakeDamage(int damage)
     {
         if (Health == 0) { return; }
-        Health -= 1;
+        Health -= damage;
         MenuManager.Instance.HUD.UpdateHealthBar();
         if (Health <= 0)
         {
@@ -281,8 +283,7 @@ public class PlayerController : MonoBehaviour, IPlayerController
     private void Die()
     {
         _dead = true;
-        this.enabled = false;
-        //SceneManager.LoadScene("Assets/Scenes/SampleScene.unity", LoadSceneMode.Single);
+        Time.timeScale = 0.5f;
     }
 
     #endregion
@@ -292,6 +293,11 @@ public class PlayerController : MonoBehaviour, IPlayerController
         {
             m_Rigidbody.gravityScale = m_Rigidbody.gravityScale != 1 ? 1 : m_Rigidbody.gravityScale;
         }
+    }
+
+    public void ShootBullet()
+    {
+        _gunControler.ShootBullet();
     }
     public IEnumerator Dash()
     {

@@ -8,8 +8,13 @@ public class MenuManager : MonoBehaviour
 
     public HUD HUD;
     public MenuPause MenuPause;
+    public MenuMort MenuMort;
+
+    [SerializeField] PlayerManager playerManager;
     private void Awake()
     {
         Instance = this;
+        playerManager = PlayerManager.instance;
     }
+
 }
