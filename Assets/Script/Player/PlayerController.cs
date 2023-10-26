@@ -79,7 +79,6 @@ public class PlayerController : MonoBehaviour, IPlayerController
 
     void FixedUpdate()
     {
-        Debug.Log(Hurting);
         if (Dashing) { return; }
         DoINeedToFlip();
         IsGrounded();
