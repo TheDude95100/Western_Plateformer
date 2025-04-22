@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class HookPoint : MonoBehaviour
 {
@@ -8,6 +9,9 @@ public class HookPoint : MonoBehaviour
     SpringJoint2D joint;
     PlayerController player;
     LineRenderer lineRenderer;
+
+    public event EventHandler OnPlayerDetected;
+    public event EventHandler OnPlayerLeft;
 
     private void Start()
     {
@@ -36,6 +40,7 @@ public class HookPoint : MonoBehaviour
             joint.connectedBody = col.GetComponent<Rigidbody2D>();
             player.Swinging = true;
             PlayerManager.instance.setHookPoint(this);
+            OnPlayerDetected?.Invoke(this, EventArgs.Empty);
         }
     }
 
@@ -45,6 +50,7 @@ public class HookPoint : MonoBehaviour
         {
             player.Swinging = false;
             PlayerManager.instance.setHookPoint(null);
+            OnPlayerLeft?.Invoke(this, EventArgs.Empty);
         }
     }
 
